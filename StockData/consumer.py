@@ -8,11 +8,12 @@
 /**********************************************************************************
 '''
 from kafka import KafkaConsumer
-import sys
+import pydoop.hdfs as hdfs
 
 consumer = KafkaConsumer('newTopic')
-sys.stdout = open('stock_data.txt','w')
+hdfs_path = 'hdfs://localhost:9000/StockData/stock_file.txt'
+
 for message in consumer:
     values = message.value.decode('utf-8')
-    print(values)
-sys.stdout.close()
+    with hdfs.open(hdfs_path, 'at') as f:
+        f.write(f"{values}\n")
